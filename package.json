@@ -1,0 +1,26 @@
+{
+  "name": "pigeon-api",
+  "version": "1.0.0",
+  "description": "API for the Pigeon web app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiger-hao/pigeon-api.git"
+  },
+  "author": "Tiger Hao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiger-hao/pigeon-api/issues"
+  },
+  "homepage": "https://github.com/tiger-hao/pigeon-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
+  }
+}
