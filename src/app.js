@@ -1,12 +1,35 @@
-const express = require('express');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+import indexRouter from './routes/index';
+import usersRouter from './routes/users';
+
+dotenv.config()
+
+if (!process.env.PORT || !process.env.MONGO_DB_URI) {
+  throw new Error("Missing environment variables")
+}
+
+const API_PORT = process.env.PORT;
+const DB_URI = process.env.MONGO_DB_URI;
+
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+mongoose.connect(DB_URI, options);
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', function () {
+  console.log("Connected to database");
+});
 
 const app = express();
-const API_PORT = 3001;
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
