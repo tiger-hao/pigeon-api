@@ -3,8 +3,9 @@ import { UserModel } from '../database/models';
 
 const router = Router();
 
+// user signup
 router.post('/', (req, res) => {
-  if (!req.body.email || !req.body.username || !req.body.password) {
+  if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
       error: "Invalid Body",
@@ -13,7 +14,6 @@ router.post('/', (req, res) => {
 
   const userData = {
     email: req.body.email,
-    username: req.body.username,
     password: req.body.password,
   };
 
@@ -25,13 +25,14 @@ router.post('/', (req, res) => {
 
     return res.json({
       success: true,
-      user: { email: user.email, username: user.username },
+      user: { email: user.email },
     });
   });
 });
 
+// user login
 router.post('/login', (req, res) => {
-  if (!req.body.username || !req.body.password) {
+  if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
       error: "Invalid Body",
@@ -39,7 +40,7 @@ router.post('/login', (req, res) => {
   }
 
   const user = {
-    username: req.body.username,
+    email: req.body.email,
     password: req.body.password
   };
 
