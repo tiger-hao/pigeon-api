@@ -4,7 +4,7 @@ import { UserModel, IUserModel, IUser } from '../models/userModel';
 export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!req.body.email || !req.body.password) {
     res.status(400).json({
-      error: "Invalid body: required fields missing"
+      error: 'Invalid body: required fields missing'
     });
   }
 
@@ -19,7 +19,8 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     if (emailTaken) {
       res.status(400).json({
         error: 'Email already in use'
-      })
+      });
+      return;
     }
 
     const user = await UserModel.create(userData);
@@ -34,7 +35,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!req.body.email || !req.body.password) {
     res.status(400).json({
-      error: "Invalid body: required fields missing"
+      error: 'Invalid body: required fields missing'
     });
   }
 
@@ -48,7 +49,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 
     if (!user) {
       res.status(401).json({
-        error: "User not found"
+        error: 'User not found'
       });
     }
 
