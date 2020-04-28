@@ -1,55 +1,61 @@
-import { Router, Request, Response } from 'express';
-import { UserModel, IUserModel } from '../models/userModel';
+import { Router, Request, Response, NextFunction } from 'express';
+import { UserModel, IUserModel, IUser } from '../models/userModel';
 
-export function createUser(req: Request, res: Response): Response {
+export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!req.body.email || !req.body.password) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid Body",
+    res.status(400).json({
+      error: "Invalid body: required fields missing"
     });
   }
 
-  const userData = {
-    email: req.body.email,
-    password: req.body.password,
-  };
-
-  // insert user into db
-  UserModel.create(userData, (err: any, user: IUserModel) => {
-    if (err) {
-      return res.status(400).json({ success: false, error: err });
-    }
-
-    return res.json({
-      success: true,
-      user: { email: user.email },
-    });
-  });
-}
-
-export function login(req: Request, res: Response): Response {
-  if (!req.body.email || !req.body.password) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid Body",
-    });
-  }
-
-  const user = {
+  const userData: IUser = {
     email: req.body.email,
     password: req.body.password
   };
 
-  UserModel.findOne(user, (err, data) => {
-    if (err) {
-      return res.json({ success: false, error: err });
-    } else if (!data) {
-      return res.status(401).json({
-        success: false,
+  try {
+    const emailTaken = await UserModel.findOne({ email: userData.email });
+
+    if (emailTaken) {
+      res.status(400).json({
+        error: 'Email already in use'
+      })
+    }
+
+    const user = await UserModel.create(userData);
+    res.json({
+      user: { email: user.email }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
+  if (!req.body.email || !req.body.password) {
+    res.status(400).json({
+      error: "Invalid body: required fields missing"
+    });
+  }
+
+  const userData: IUser = {
+    email: req.body.email,
+    password: req.body.password
+  };
+
+  try {
+    const user = await UserModel.findOne(userData);
+
+    if (!user) {
+      res.status(401).json({
         error: "User not found"
       });
     }
 
-    return res.json({ success: true, data: data });
-  });
+    res.json({
+      user: { email: user.email }
+    });
+  } catch (err) {
+    next(err);
+  }
 }
