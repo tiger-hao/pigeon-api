@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import mongoose, { ConnectionOptions } from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
@@ -15,9 +15,10 @@ if (!process.env.PORT || !process.env.MONGO_DB_URI) {
 const API_PORT = process.env.PORT;
 const DB_URI = process.env.MONGO_DB_URI;
 
-const options = {
+const options: ConnectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useCreateIndex: true,
 };
 mongoose.connect(DB_URI, options);
 
