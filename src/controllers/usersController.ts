@@ -1,10 +1,7 @@
-import { Router } from 'express';
-import { UserModel } from '../database/models';
+import { Router, Request, Response } from 'express';
+import { UserModel, IUserModel } from '../models/userModel';
 
-export const usersRouter = Router();
-
-// user signup
-usersRouter.post('/', (req, res) => {
+export function createUser(req: Request, res: Response): Response {
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
@@ -18,7 +15,7 @@ usersRouter.post('/', (req, res) => {
   };
 
   // insert user into db
-  UserModel.create(userData, (err, user) => {
+  UserModel.create(userData, (err: any, user: IUserModel) => {
     if (err) {
       return res.status(400).json({ success: false, error: err });
     }
@@ -28,10 +25,9 @@ usersRouter.post('/', (req, res) => {
       user: { email: user.email },
     });
   });
-});
+}
 
-// user login
-usersRouter.post('/login', (req, res) => {
+export function login(req: Request, res: Response): Response {
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
@@ -56,27 +52,4 @@ usersRouter.post('/login', (req, res) => {
 
     return res.json({ success: true, data: data });
   });
-});
-
-// // update user
-// .patch((req, res) => {
-//   const { id, update } = req.body;
-//   UserModel.findByIdAndUpdate(id, update, (err) => {
-//     if (err) {
-//       return res.json({ success: false, error: err });
-//     }
-
-//     return res.json({ success: true });
-//   });
-// })
-// // delete user
-// .delete((req, res) => {
-//   const { id } = req.body;
-//   UserModel.findByIdAndRemove(id, (err) => {
-//     if (err) {
-//       return res.send(err);
-//     }
-
-//     return res.json({ success: true });
-//   });
-// });
+}

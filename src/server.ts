@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import { rootRouter } from './routes/root';
-import { usersRouter } from './routes/users';
+import { rootRouter } from './routes/rootRoute';
+import { usersRouter } from './routes/usersRoute';
 
 dotenv.config();
 

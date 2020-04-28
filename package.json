@@ -4,7 +4,7 @@
   "description": "API for the Pigeon web app",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/app.js",
+    "start": "ts-node-dev --no-notify src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,10 +24,10 @@
     "mongoose": "^5.9.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.5",
-    "eslint": "^6.8.0",
-    "nodemon": "^2.0.3"
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.6",
+    "@types/mongoose": "^5.7.14",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.8.3"
   }
 }
