@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const schema = new Schema(
+export const userSchema = new Schema(
   {
     email: {
       type: String,
@@ -14,5 +14,3 @@ const schema = new Schema(
     }
   }
 );
-
-export default schema;

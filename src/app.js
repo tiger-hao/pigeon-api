@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import indexRouter from './routes/index';
-import usersRouter from './routes/users';
+import { rootRouter } from './routes/root';
+import { usersRouter } from './routes/users';
 
-dotenv.config()
+dotenv.config();
 
 if (!process.env.PORT || !process.env.MONGO_DB_URI) {
-  throw new Error("Missing environment variables")
+  throw new Error("Missing environment variables");
 }
 
 const API_PORT = process.env.PORT;
@@ -30,6 +30,6 @@ db.once('open', function () {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/', indexRouter);
+app.use('/', rootRouter);
 app.use('/users', usersRouter);
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

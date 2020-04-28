@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { UserModel } from '../database/models';
 
-const router = Router();
+export const usersRouter = Router();
 
 // user signup
-router.post('/', (req, res) => {
+usersRouter.post('/', (req, res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
 });
 
 // user login
-router.post('/login', (req, res) => {
+usersRouter.post('/login', (req, res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       success: false,
@@ -57,6 +57,7 @@ router.post('/login', (req, res) => {
     return res.json({ success: true, data: data });
   });
 });
+
 // // update user
 // .patch((req, res) => {
 //   const { id, update } = req.body;
@@ -79,5 +80,3 @@ router.post('/login', (req, res) => {
 //     return res.json({ success: true });
 //   });
 // });
-
-export default router;
