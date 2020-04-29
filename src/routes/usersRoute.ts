@@ -1,13 +1,13 @@
 import { Router, Request, Response } from 'express';
-import * as usersController from '../controllers/usersController';
+import * as userController from '../controllers/userController';
 
 export const usersRouter = Router();
 
 // user signup
-usersRouter.post('/', usersController.createUser);
+usersRouter.post('/', userController.createUser);
 
 // user login
-usersRouter.post('/login', usersController.login);
+usersRouter.post('/login', userController.login);
 
 // // update user
 // .patch((req, res) => {
