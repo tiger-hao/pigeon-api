@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
-import * as authController from '../controllers/authController';
+import { getToken } from '../controllers/authController';
+import { validateUser } from '../controllers/userController';
 
 export const authRouter = Router();
 
-authRouter.post('/token', authController.getToken);
+authRouter.post('/token', validateUser, getToken);

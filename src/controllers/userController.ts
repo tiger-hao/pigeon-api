@@ -1,13 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
-import { IUser, validateUser } from '../models/userModel';
+import { check, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 
+export const validateUser = [
+  check('email')
+    .exists().withMessage('Email required')
+    .isEmail().normalizeEmail(),
+  check('password')
+    .exists().withMessage('Password required')
+    .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
+    .matches(/\d/).withMessage('Must contain a number')
+];
+
 export async function createUser(req: Request, res: Response, next: NextFunction) {
-  const { error } = validateUser(req.body);
-  if (error) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     return res.status(400).json({
-      errors: error.details.map((detail) => detail.message)
+      errors: errors.array({ onlyFirstError: true })
     });
   }
 
@@ -22,7 +32,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 
     const user = await userService.createUser({
       email: req.body.email,
-      password: await bcrypt.hash(req.body.password, 10)
+      password: await bcrypt.hash(password, 10)
     });
 
     next();

@@ -1,5 +1,4 @@
-import { model, Document, Schema, HookNextFunction } from 'mongoose';
-import Joi from '@hapi/joi';
+import { model, Document, Schema } from 'mongoose';
 
 export interface IUser {
   email: string;
@@ -22,14 +21,5 @@ const userSchema = new Schema(
     }
   }
 );
-
-export function validateUser(user: IUser) {
-  const schema = Joi.object<IUser>({
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(8).max(255).required()
-  });
-
-  return schema.validate(user);
-}
 
 export const UserModel = model<IUserModel>('User', userSchema);

@@ -6,7 +6,7 @@ import { authMiddleware } from '../middleware/authMiddleware';
 export const usersRouter = Router();
 
 // user signup
-usersRouter.post('/', userController.createUser, getToken);
+usersRouter.post('/', userController.validateUser, userController.createUser, getToken);
 
 usersRouter.use('/me', authMiddleware);
 usersRouter.route('/me').get(userController.getUser);

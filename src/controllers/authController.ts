@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator/src/validation-result';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { UserModel, IUser, validateUser } from '../models/userModel';
 import { getUserByEmail } from '../services/userService';
 
 export async function getToken(req: Request, res: Response, next: NextFunction) {
-  const { error } = validateUser(req.body);
-  if (error) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     return res.status(400).json({
-      errors: error.details.map((detail) => detail.message)
+      errors: errors.array({ onlyFirstError: true })
     });
   }
 
