@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import { rootRouter } from './routes/rootRoute';
 import { usersRouter } from './routes/usersRoute';
+import { authRouter } from './routes/authRoute';
 
 dotenv.config();
 
@@ -31,6 +32,9 @@ db.once('open', function () {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use('/', rootRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter)
+
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
