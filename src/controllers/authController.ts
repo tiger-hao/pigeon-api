@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { UserModel, IUser, validateUser } from '../models/userModel';
+import { getUserByEmail } from '../services/userService';
 
 export async function getToken(req: Request, res: Response, next: NextFunction) {
   const { error } = validateUser(req.body);
@@ -11,7 +13,7 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
   }
 
   try {
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await getUserByEmail(req.body.email);
 
     if (!user) {
       return res.status(400).json({
@@ -27,8 +29,17 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
       });
     }
 
+    const payload = {
+      user: {
+        email: user.email
+      }
+    }
+
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+
     return res.json({
-      user: { email: user.email }
+      access_token: token,
+      token_type: 'Bearer'
     });
   } catch (err) {
     next(err);

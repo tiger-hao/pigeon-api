@@ -16,32 +16,3 @@ export async function getUserByEmail(email: string): Promise<IUserModel> {
     throw err;
   }
 }
-
-export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (!req.body.email || !req.body.password) {
-    res.status(400).json({
-      error: 'Invalid body: required fields missing'
-    });
-  }
-
-  const userData: IUser = {
-    email: req.body.email,
-    password: req.body.password
-  };
-
-  try {
-    const user = await UserModel.findOne(userData);
-
-    if (!user) {
-      res.status(401).json({
-        error: 'User not found'
-      });
-    }
-
-    res.json({
-      user: { email: user.email }
-    });
-  } catch (err) {
-    next(err);
-  }
-}

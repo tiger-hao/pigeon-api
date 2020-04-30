@@ -9,7 +9,7 @@ import { authRouter } from './routes/authRoute';
 
 dotenv.config();
 
-if (!process.env.PORT || !process.env.MONGO_DB_URI) {
+if (!process.env.PORT || !process.env.MONGO_DB_URI || !process.env.ACCESS_TOKEN_SECRET) {
   throw new Error("Missing environment variables");
 }
 
