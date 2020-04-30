@@ -7,7 +7,7 @@ export const usersRouter = Router();
 usersRouter.post('/', userController.createUser);
 
 // user login
-usersRouter.post('/login', userController.login);
+// usersRouter.post('/login', userController.login);
 
 // // update user
 // .patch((req, res) => {
