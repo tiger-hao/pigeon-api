@@ -8,7 +8,10 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      errors: errors.array({ onlyFirstError: true })
+      status: 'fail',
+      data: {
+        errors: errors.array({ onlyFirstError: true })
+      }
     });
   }
 
@@ -16,8 +19,11 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
     const user = await getUserByEmail(req.body.email);
 
     if (!user) {
-      return res.status(400).json({
-        error: 'Account does not exist'
+      return res.status(401).json({
+        status: 'fail',
+        data: {
+          email: 'Account does not exist'
+        }
       });
     }
 
@@ -25,7 +31,10 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
 
     if (!isCorrectPassword) {
       return res.status(401).json({
-        error: 'Incorrect password'
+        status: 'fail',
+        data: {
+          password: 'Incorrect password'
+        }
       });
     }
 
@@ -38,8 +47,11 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
 
     return res.json({
-      access_token: token,
-      token_type: 'Bearer'
+      status: 'success',
+      data: {
+        access_token: token,
+        token_type: 'Bearer'
+      }
     });
   } catch (err) {
     next(err);

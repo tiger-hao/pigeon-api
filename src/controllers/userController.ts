@@ -23,7 +23,10 @@ export async function createUser(req: Request, res: Response, next: NextFunction
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      errors: errors.array({ onlyFirstError: true })
+      status: 'fail',
+      data: {
+        errors: errors.array({ onlyFirstError: true })
+      }
     });
   }
 
@@ -31,17 +34,19 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 
   try {
     if (await userService.getUserByEmail(email)) {
-      return res.status(400).json({
-        error: 'Email already in use'
+      return res.status(409).json({
+        status: 'fail',
+        data: {
+          email: 'Email already in use'
+        }
       });
     }
 
-    const user = await userService.createUser({
+    await userService.createUser({
       email,
       password: await bcrypt.hash(password, 10),
       name
     });
-
     next();
   } catch (err) {
     next(err);
@@ -54,7 +59,10 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await userService.getUserByEmail(email);
     return res.json({
-      user: { email: user.email }
+      status: 'success',
+      data: {
+        user: { email: user.email }
+      }
     });
   } catch (err) {
     next(err);
