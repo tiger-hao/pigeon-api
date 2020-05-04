@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { check, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 
-export const validateUser = [
+export const validateUserLogin = [
   check('email')
     .exists().withMessage('Email required')
     .isEmail().normalizeEmail(),
@@ -11,6 +11,12 @@ export const validateUser = [
     .exists().withMessage('Password required')
     .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
     .matches(/\d/).withMessage('Must contain a number')
+];
+
+export const validateUserSignup = [
+  ...validateUserLogin,
+  check('name.first').exists().withMessage('First name required'),
+  check('name.last').exists().withMessage('Last name required')
 ];
 
 export async function createUser(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +27,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     });
   }
 
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   try {
     if (await userService.getUserByEmail(email)) {
@@ -31,8 +37,9 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     }
 
     const user = await userService.createUser({
-      email: req.body.email,
-      password: await bcrypt.hash(password, 10)
+      email,
+      password: await bcrypt.hash(password, 10),
+      name
     });
 
     next();
