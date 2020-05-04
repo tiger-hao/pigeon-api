@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose, { ConnectionOptions } from 'mongoose';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
 
 import { errorMiddleware } from './middleware/errorMiddleware';
@@ -33,6 +34,7 @@ db.once('open', function () {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/', rootRouter);
 app.use('/users', usersRouter);
