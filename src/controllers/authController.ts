@@ -40,7 +40,7 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
 
     const payload = {
       user: {
-        email: user.email
+        id: user.id
       }
     }
 

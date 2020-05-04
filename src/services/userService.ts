@@ -1,4 +1,3 @@
-import { Router, Request, Response, NextFunction } from 'express';
 import { UserModel, IUserModel, IUser } from '../models/userModel';
 
 export async function createUser(user: IUser): Promise<IUserModel> {
@@ -9,9 +8,17 @@ export async function createUser(user: IUser): Promise<IUserModel> {
   }
 }
 
-export async function getUserByEmail(email: string): Promise<IUserModel> {
+export async function getUserByEmail(email: string): Promise<IUserModel | null> {
   try {
     return await UserModel.findOne({ email });
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getUserById(id: string): Promise<IUserModel | null> {
+  try {
+    return await UserModel.findById(id);
   } catch (err) {
     throw err;
   }

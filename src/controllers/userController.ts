@@ -54,14 +54,29 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 }
 
 export async function getUser(req: Request, res: Response, next: NextFunction) {
-  const { email } = req.app.locals.user;
+  const { id } = req.app.locals.user;
 
   try {
-    const user = await userService.getUserByEmail(email);
+    const user = await userService.getUserById(id);
+
+    if (!user) {
+      return res.status(400).json({
+        status: 'fail',
+        data: {
+          user: 'Account does not exist'
+        }
+      });
+    }
+
+    const { name, email } = user;
+
     return res.json({
       status: 'success',
       data: {
-        user: { email: user.email }
+        user: {
+          name,
+          email
+        }
       }
     });
   } catch (err) {
