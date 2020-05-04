@@ -3,6 +3,7 @@ import mongoose, { ConnectionOptions } from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
+import { errorMiddleware } from './middleware/errorMiddleware';
 import { rootRouter } from './routes/rootRoute';
 import { usersRouter } from './routes/usersRoute';
 import { authRouter } from './routes/authRoute';
@@ -37,4 +38,5 @@ app.use('/', rootRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter)
 
+app.use(errorMiddleware);
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
