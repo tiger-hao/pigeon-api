@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
-import { check, validationResult } from 'express-validator';
+import { check } from 'express-validator';
 import * as userService from '../services/userService';
+import { validationMiddleware } from '../middleware/validationMiddleware';
 
 export const validateUserLogin = [
   check('email')
@@ -10,26 +11,18 @@ export const validateUserLogin = [
   check('password')
     .exists().withMessage('Password required')
     .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
-    .matches(/\d/).withMessage('Must contain a number')
+    .matches(/\d/).withMessage('Must contain a number'),
+  validationMiddleware
 ];
 
 export const validateUserSignup = [
   ...validateUserLogin,
   check('name.first').exists().withMessage('First name required'),
-  check('name.last').exists().withMessage('Last name required')
+  check('name.last').exists().withMessage('Last name required'),
+  validationMiddleware
 ];
 
 export async function createUser(req: Request, res: Response, next: NextFunction) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      status: 'fail',
-      data: {
-        errors: errors.array({ onlyFirstError: true })
-      }
-    });
-  }
-
   const { email, password, name } = req.body;
 
   try {

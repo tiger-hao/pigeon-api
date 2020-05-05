@@ -1,20 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator/src/validation-result';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { getUserByEmail } from '../services/userService';
 
 export async function getToken(req: Request, res: Response, next: NextFunction) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      status: 'fail',
-      data: {
-        errors: errors.array({ onlyFirstError: true })
-      }
-    });
-  }
-
   try {
     const user = await getUserByEmail(req.body.email);
 
