@@ -8,15 +8,18 @@ export const validateUserLogin = [
   check('email')
     .exists().withMessage('Email required')
     .isEmail().normalizeEmail(),
-  check('password')
-    .exists().withMessage('Password required')
-    .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
-    .matches(/\d/).withMessage('Must contain a number'),
+  check('password').exists().withMessage('Password required'),
   validationMiddleware
 ];
 
 export const validateUserSignup = [
-  ...validateUserLogin,
+  check('email')
+    .exists().withMessage('Email required')
+    .isEmail().normalizeEmail(),
+  check('password')
+    .exists().withMessage('Password required')
+    .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
+    .matches(/\d/).withMessage('Must contain a number'),
   check('name.first').exists().withMessage('First name required'),
   check('name.last').exists().withMessage('Last name required'),
   validationMiddleware
