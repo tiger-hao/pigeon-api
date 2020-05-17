@@ -1,14 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import { check } from 'express-validator';
-import * as userService from '../services/userService';
 import { validationMiddleware } from '../middleware/validationMiddleware';
+import * as userService from '../services/userService';
 
 export const validateUserLogin = [
   check('email')
     .exists().withMessage('Email required')
     .isEmail().normalizeEmail(),
-  check('password').exists().withMessage('Password required'),
+  check('password')
+    .exists().withMessage('Password required')
+    .isString(),
   validationMiddleware
 ];
 
@@ -18,10 +20,15 @@ export const validateUserSignup = [
     .isEmail().normalizeEmail(),
   check('password')
     .exists().withMessage('Password required')
+    .isString()
     .isLength({ min: 8 }).withMessage('Must be at least 8 characters long')
     .matches(/\d/).withMessage('Must contain a number'),
-  check('name.first').exists().withMessage('First name required'),
-  check('name.last').exists().withMessage('Last name required'),
+  check('name.first')
+    .exists().withMessage('First name required')
+    .isString(),
+  check('name.last')
+    .exists().withMessage('Last name required')
+    .isString(),
   validationMiddleware
 ];
 
