@@ -12,29 +12,15 @@ export interface User {
 
 export async function createUser(user: Omit<User, 'id'>): Promise<User> {
   try {
-    const userDoc = await UserModel.create(user);
-
-    return {
-      id: userDoc.id,
-      name: userDoc.name,
-      email: userDoc.email,
-      password: userDoc.password
-    };
+    return (await UserModel.create(user)).toJSON();
   } catch (err) {
     throw err;
   }
 }
 
-export async function getUserByEmail(email: string): Promise<OmitUser | null> {
+export async function getUserByEmail(email: string): Promise<User | null> {
   try {
-    const userDoc = await UserModel.findOne({ email });
-
-    return userDoc && {
-      id: userDoc.id,
-      name: userDoc.name,
-      email: userDoc.email,
-      password: userDoc.password
-    };
+    return (await UserModel.findOne({ email })).toJSON();
   } catch (err) {
     throw err;
   }
@@ -42,14 +28,7 @@ export async function getUserByEmail(email: string): Promise<OmitUser | null> {
 
 export async function getUserById(id: string): Promise<User | null> {
   try {
-    const userDoc = await UserModel.findById(id);
-
-    return userDoc && {
-      id: userDoc.id,
-      name: userDoc.name,
-      email: userDoc.email,
-      password: userDoc.password
-    }
+    return (await UserModel.findById(id)).toJSON();
   } catch (err) {
     throw err;
   }

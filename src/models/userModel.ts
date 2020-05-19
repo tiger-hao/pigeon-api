@@ -1,9 +1,15 @@
 import { model, Document, Schema } from 'mongoose';
-import { User } from '../services/userService';
 
-export type UserDocument = Omit<User, 'id'> & Document;
+export interface UserDocument extends Document {
+  name: {
+    first: string;
+    last: string;
+  };
+  email: string;
+  password: string;
+}
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     name: {
       first: {
@@ -29,5 +35,13 @@ const userSchema = new Schema(
     }
   }
 );
+
+userSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
 export const UserModel = model<UserDocument>('User', userSchema);

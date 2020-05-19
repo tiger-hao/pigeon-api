@@ -71,15 +71,12 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    const { name, email } = user;
+    const { password, ...userInfo } = user;
 
     return res.json({
       status: 'success',
       data: {
-        user: {
-          name,
-          email
-        }
+        user: userInfo
       }
     });
   } catch (err) {
