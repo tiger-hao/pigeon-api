@@ -1,16 +1,20 @@
 import { model, Document, Schema } from 'mongoose';
-import { Message } from '../services/messageService';
 
-export type MessageDocument = Omit<Message, 'id'> & Document;
+export interface MessageDocument extends Document {
+  conversation: string;
+  sender: string;
+  createdAt: string;
+  text: string;
+}
 
-const messageSchema = new Schema(
+export const messageSchema = new Schema(
   {
-    conversationId: {
+    conversation: {
       type: Schema.Types.ObjectId,
       ref: 'Conversation',
       required: true
     },
-    senderId: {
+    sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
@@ -20,12 +24,20 @@ const messageSchema = new Schema(
       default: new Date(),
       required: true
     },
-    message: {
+    text: {
       type: String,
       required: true,
       trim: true
     }
   }
 );
+
+messageSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
 export const MessageModel = model<MessageDocument>('Message', messageSchema);

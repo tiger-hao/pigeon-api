@@ -2,10 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { check } from 'express-validator';
 import { validationMiddleware } from '../middleware/validationMiddleware';
 import * as messageService from '../services/messageService';
-import { setLastMessage } from '../services/conversationService';
 
 export const validateMessage = [
-  check('message')
+  check('text')
     .exists().withMessage('Required')
     .isString(),
   validationMiddleware
@@ -14,20 +13,19 @@ export const validateMessage = [
 export async function createMessage(req: Request, res: Response, next: NextFunction) {
   const { id: senderId } = req.app.locals.user;
   const { conversationId } = req.params;
-  const { message } = req.body;
+  const { text } = req.body;
 
   try {
-    const msg = await messageService.createMessage({
-      conversationId,
-      senderId,
-      message
+    const message = await messageService.createMessage({
+      conversation: conversationId,
+      sender: senderId,
+      text
     });
-    await setLastMessage(msg.id, conversationId);
 
     return res.status(201).json({
       status: 'success',
       data: {
-        message: msg
+        message
       }
     });
   } catch (err) {
@@ -66,6 +64,7 @@ export async function getMessagesByConversation(req: Request, res: Response, nex
 
   try {
     const messages = await messageService.getMessagesByConversation(conversationId);
+
     return res.json({
       status: 'success',
       data: {
