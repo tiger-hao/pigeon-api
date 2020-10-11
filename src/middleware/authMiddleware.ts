@@ -11,7 +11,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   const token = authHeader[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as object;
     req.app.locals = decoded;
     next();
   } catch (err) {

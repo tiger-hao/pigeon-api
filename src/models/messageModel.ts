@@ -3,7 +3,6 @@ import { model, Document, Schema } from 'mongoose';
 export interface MessageDocument extends Document {
   conversation: string;
   sender: string;
-  createdAt: string;
   text: string;
 }
 
@@ -19,15 +18,16 @@ export const messageSchema = new Schema(
       ref: 'User',
       required: true
     },
-    createdAt: {
-      type: Date,
-      default: new Date(),
-      required: true
-    },
     text: {
       type: String,
       required: true,
       trim: true
+    }
+  },
+  {
+    timestamps: {
+      createdAt: true,
+      updatedAt: false
     }
   }
 );
