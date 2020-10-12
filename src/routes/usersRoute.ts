@@ -7,7 +7,9 @@ import { conversationsRouter } from './conversationsRoute';
 export const usersRouter = Router();
 
 // user signup
-usersRouter.post('/', userController.validateUserSignup, userController.createUser, getToken);
+usersRouter.route('/')
+  .post(userController.validateUserSignup, userController.createUser, getToken)
+  .get(authMiddleware, userController.validateUserQuery, userController.getUsers)
 
 usersRouter.use('/me', authMiddleware);
 usersRouter.route('/me').get(userController.getUser);

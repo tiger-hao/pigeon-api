@@ -32,7 +32,7 @@ export async function getMessageById(id: string): Promise<Message | null> {
   }
 }
 
-export async function getMessagesByConversation(conversationId: string): Promise<Omit<Message, 'conversation'>[] | null> {
+export async function getMessagesByConversation(conversationId: string): Promise<Omit<Message, 'conversation'>[]> {
   try {
     const messageDocs = await MessageModel.find({ conversation: conversationId }, '-conversation').populate('sender', 'name');
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
-import { check } from 'express-validator';
+import { check, query } from 'express-validator';
 import { validationMiddleware } from '../middleware/validationMiddleware';
 import * as userService from '../services/userService';
 
@@ -31,6 +31,11 @@ export const validateUserSignup = [
     .isString(),
   validationMiddleware
 ];
+
+export const validateUserQuery = [
+  query('name').isString(),
+  validationMiddleware
+]
 
 export async function createUser(req: Request, res: Response, next: NextFunction) {
   const { email, password, name } = req.body;
@@ -77,6 +82,23 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
       status: 'success',
       data: {
         user: userInfo
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUsers(req: Request, res: Response, next: NextFunction) {
+  const name = <string>req.query.name || '';
+
+  try {
+    const users = await userService.getUsersByName(name);
+
+    return res.json({
+      status: 'success',
+      data: {
+        users
       }
     });
   } catch (err) {

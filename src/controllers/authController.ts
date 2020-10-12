@@ -38,7 +38,6 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
         id: user.id
       }
     }
-
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
 
     return res.json({
