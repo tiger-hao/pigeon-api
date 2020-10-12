@@ -32,7 +32,7 @@ export async function getConversationById(id: string, userId: string): Promise<C
 
 export async function getConversationsByMember(memberId: string): Promise<Conversation[]> {
   try {
-    const conversationDocs = await ConversationModel.find({ members: memberId })
+    const conversationDocs = await ConversationModel.find({ members: memberId }).sort({ updatedAt: 'desc' })
       .populate('members', 'name')
       .populate({
         path: 'lastMessage',
