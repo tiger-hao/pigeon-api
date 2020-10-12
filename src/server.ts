@@ -14,7 +14,7 @@ import { authRouter } from './routes/authRoute';
 dotenv.config();
 
 if (!process.env.PORT || !process.env.MONGO_DB_URI || !process.env.ACCESS_TOKEN_SECRET) {
-  throw new Error("Missing environment variables");
+  throw new Error('Missing environment variables');
 }
 
 const API_PORT = process.env.PORT;
@@ -30,7 +30,7 @@ mongoose.connect(DB_URI, options);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', function () {
-  console.log("Connected to database");
+  console.log('Connected to database');
 });
 
 const app = express();

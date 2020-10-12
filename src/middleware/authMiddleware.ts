@@ -5,7 +5,7 @@ import { TokenPayload } from '../controllers/authController';
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization && req.headers.authorization.split(' ');
 
-  if (!authHeader || authHeader[0] !== "Bearer" || !authHeader[1]) {
+  if (!authHeader || authHeader[0] !== 'Bearer' || !authHeader[1]) {
     return res.sendStatus(401);
   }
 

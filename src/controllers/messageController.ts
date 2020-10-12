@@ -25,7 +25,7 @@ export async function createMessage(req: Request, res: Response, next: NextFunct
       text
     });
 
-    const { members } = await getConversationById(conversationId);
+    const { members } = await getConversationById(conversationId, senderId);
 
     members.forEach(({ id: memberId }) => {
       if (memberId !== senderId) {

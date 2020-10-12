@@ -4,9 +4,6 @@ import { validationMiddleware } from '../middleware/validationMiddleware';
 import * as conversationService from '../services/conversationService';
 
 export const validateConversation = [
-  check('name')
-    .exists().withMessage('Required')
-    .isString(),
   check('members')
     .exists().withMessage('Required')
     .isArray({ min: 1 }),
@@ -16,14 +13,17 @@ export const validateConversation = [
 ];
 
 export async function createConversation(req: Request, res: Response, next: NextFunction) {
-  const { id: senderId } = res.locals.user;
+  const { id: userId } = res.locals.user;
   const { name, members } = req.body;
 
   try {
-    const conversation = await conversationService.createConversation({
-      name,
-      members: [senderId, ...members]
-    });
+    const conversation = await conversationService.createConversation(
+      {
+        name,
+        members: [userId, ...members]
+      },
+      userId
+    );
 
     return res.status(201).json({
       status: 'success',
@@ -38,9 +38,10 @@ export async function createConversation(req: Request, res: Response, next: Next
 
 export async function getConversationById(req: Request, res: Response, next: NextFunction) {
   const { conversationId } = req.params;
+  const { id: userId } = res.locals.user;
 
   try {
-    const conversation = await conversationService.getConversationById(conversationId);
+    const conversation = await conversationService.getConversationById(conversationId, userId);
 
     if (!conversation) {
       return res.status(400).json({

@@ -2,17 +2,13 @@ import { model, Document, Schema } from 'mongoose';
 import { MessageDocument, messageSchema } from './messageModel';
 
 export interface ConversationDocument extends Document {
-  name: string;
   members: string[];
+  name?: string;
   lastMessage?: string;
 }
 
 export const conversationSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true
-    },
     members: {
       type: [{
         type: Schema.Types.ObjectId,
@@ -20,9 +16,18 @@ export const conversationSchema = new Schema(
       }],
       required: true
     },
+    name: {
+      type: String,
+    },
     lastMessage: {
       type: Schema.Types.ObjectId,
       ref: 'Message'
+    }
+  },
+  {
+    timestamps: {
+      createdAt: false,
+      updatedAt: true
     }
   }
 );

@@ -5,26 +5,26 @@ import { User } from './userService';
 
 export interface Conversation {
   id: string;
-  name: string;
   members: Pick<User, 'id' | 'name'>[];
+  name: string;
   lastMessage?: Omit<Message, 'conversation'>;
 }
 
-export async function createConversation(conversation: Omit<Conversation, 'id'>): Promise<Conversation> {
+export async function createConversation(conversation: Omit<Conversation, 'id'>, userId: string): Promise<Conversation> {
   try {
     const conversationDoc = await ConversationModel.create(conversation)
 
-    return getPopulatedConversation(conversationDoc);
+    return getPopulatedConversation(conversationDoc, userId);
   } catch (err) {
     throw err;
   }
 }
 
-export async function getConversationById(id: string): Promise<Conversation | null> {
+export async function getConversationById(id: string, userId: string): Promise<Conversation | null> {
   try {
     const conversationDoc = await ConversationModel.findById(id);
 
-    return conversationDoc && getPopulatedConversation(conversationDoc);
+    return conversationDoc && getPopulatedConversation(conversationDoc, userId);
   } catch (err) {
     throw err;
   }
@@ -43,7 +43,7 @@ export async function getConversationsByMember(memberId: string): Promise<Conver
         }
       });
 
-    return conversationDocs.map((conversationDoc: ConversationDocument) => conversationDoc.toJSON());
+    return conversationDocs.map((conversationDoc: ConversationDocument) => getConversationWithName(conversationDoc.toJSON(), memberId));
   } catch (err) {
     throw err;
   }
@@ -57,7 +57,7 @@ export async function setLastMessage(messageId: string, conversationId: string):
   }
 }
 
-async function getPopulatedConversation(conversationDoc: ConversationDocument): Promise<Conversation> {
+async function getPopulatedConversation(conversationDoc: ConversationDocument, userId: string): Promise<Conversation> {
   await conversationDoc
     .populate('members', 'name')
     .populate({
@@ -70,5 +70,18 @@ async function getPopulatedConversation(conversationDoc: ConversationDocument): 
     })
     .execPopulate();
 
-  return conversationDoc.toJSON();
+  return getConversationWithName(conversationDoc.toJSON(), userId);
+}
+
+function getConversationWithName(conversation: Omit<Conversation, 'name'> & { name?: string }, userId: string): Conversation {
+  return {
+    ...conversation,
+    name: conversation.name || conversation.members.reduce((acc: string[], member) => {
+      if (member.id != userId) {
+        acc.push(member.name.first);
+      }
+
+      return acc;
+    }, []).join(', ')
+  }
 }

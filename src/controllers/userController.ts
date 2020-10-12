@@ -76,12 +76,10 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    const { password, ...userInfo } = user;
-
     return res.json({
       status: 'success',
       data: {
-        user: userInfo
+        user
       }
     });
   } catch (err) {
