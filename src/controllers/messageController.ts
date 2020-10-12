@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { check } from 'express-validator';
+import { Server } from 'socket.io';
 import { validationMiddleware } from '../middleware/validationMiddleware';
 import * as messageService from '../services/messageService';
+import { getConversationById } from '../services/conversationService';
 
 export const validateMessage = [
   check('text')
@@ -11,9 +13,10 @@ export const validateMessage = [
 ];
 
 export async function createMessage(req: Request, res: Response, next: NextFunction) {
-  const { id: senderId } = req.app.locals.user;
+  const { id: senderId } = res.locals.user;
   const { conversationId } = req.params;
   const { text } = req.body;
+  const io: Server = req.app.locals.io;
 
   try {
     const message = await messageService.createMessage({
@@ -21,6 +24,14 @@ export async function createMessage(req: Request, res: Response, next: NextFunct
       sender: senderId,
       text
     });
+
+    const { members } = await getConversationById(conversationId);
+
+    members.forEach(({ id: memberId }) => {
+      if (memberId !== senderId) {
+        io.emit(memberId, { message, conversationId })
+      }
+    })
 
     return res.status(201).json({
       status: 'success',

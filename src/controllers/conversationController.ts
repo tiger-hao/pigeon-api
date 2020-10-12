@@ -16,7 +16,7 @@ export const validateConversation = [
 ];
 
 export async function createConversation(req: Request, res: Response, next: NextFunction) {
-  const { id: senderId } = req.app.locals.user;
+  const { id: senderId } = res.locals.user;
   const { name, members } = req.body;
 
   try {
@@ -64,7 +64,7 @@ export async function getConversationById(req: Request, res: Response, next: Nex
 
 
 export async function getConversationsByMember(req: Request, res: Response, next: NextFunction) {
-  const { id } = req.app.locals.user;
+  const { id } = res.locals.user;
 
   try {
     const conversations = await conversationService.getConversationsByMember(id);

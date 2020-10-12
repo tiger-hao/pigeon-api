@@ -3,6 +3,12 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { getUserByEmail } from '../services/userService';
 
+export interface TokenPayload {
+  user: {
+    id: string;
+  };
+}
+
 export async function getToken(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await getUserByEmail(req.body.email);
@@ -27,7 +33,7 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
       });
     }
 
-    const payload = {
+    const payload: TokenPayload = {
       user: {
         id: user.id
       }

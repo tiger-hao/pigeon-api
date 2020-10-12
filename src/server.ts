@@ -1,4 +1,6 @@
+import http from 'http';
 import express from 'express';
+import socket from 'socket.io';
 import mongoose, { ConnectionOptions } from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -32,6 +34,10 @@ db.once('open', function () {
 });
 
 const app = express();
+const server = http.createServer(app);
+const io = socket(server);
+
+app.locals.io = io;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -41,4 +47,4 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter)
 
 app.use(errorMiddleware);
-app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
+server.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

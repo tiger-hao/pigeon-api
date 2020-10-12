@@ -57,7 +57,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 }
 
 export async function getUser(req: Request, res: Response, next: NextFunction) {
-  const { id } = req.app.locals.user;
+  const { id } = res.locals.user;
 
   try {
     const user = await userService.getUserById(id);

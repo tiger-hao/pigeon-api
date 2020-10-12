@@ -14,8 +14,8 @@ export async function createMessage(message: Pick<MessageDocument, 'conversation
   try {
     const messageDoc = await MessageModel.create(message);
     await setLastMessage(messageDoc.id, messageDoc.conversation);
-
     const { conversation, ...msg } = await getPopulatedMessage(messageDoc);
+
     return msg;
   } catch (err) {
     throw err;
