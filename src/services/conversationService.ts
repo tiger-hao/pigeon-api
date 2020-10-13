@@ -1,4 +1,4 @@
-import { ConversationModel, ConversationDocument } from '../models/ConversationModel';
+import { ConversationModel, ConversationDocument } from '../models/conversationModel';
 import { MessageDocument } from '../models/messageModel';
 import { Message } from './messageService';
 import { User } from './userService';
